@@ -1,0 +1,43 @@
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    color: #4CAF50;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #4CAF50;
+    margin: 0 4px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #f2f2f2;
+}
+
+.editar-cupon-btn {
+    display: inline-block;
+    padding: 5px 15px;
+    margin: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    /* Color de fondo verde */
+    color: #ffffff;
+    /* Color de texto blanco */
+    border: none;
+    border-radius: 5px;
+}
+
+/* Estilos cuando se pasa el ratón sobre los botones */
+.editar-cupon-btn:hover {
+    background-color: #45a049;
+    /* Cambia el color de fondo cuando se pasa el ratón */
+}

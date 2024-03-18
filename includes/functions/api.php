@@ -1,10 +1,10 @@
 <?php
-function getOfertas() {
+function getOfertas($offset = null, $limit = null) {
     global $wpdb;
     $tabla_ofertas = $wpdb->prefix . 'ofertas';
 
     // Consulta para seleccionar todas las filas de la tabla de ofertas
-    $consulta_sql = "SELECT * FROM $tabla_ofertas";
+    $consulta_sql = ($offset != null && $limit != null) ? "SELECT * FROM $tabla_ofertas LIMIT $offset, $limit" : "SELECT * FROM $tabla_ofertas";
     $resultados = $wpdb->get_results($consulta_sql);
 
     $ofertas = array();
