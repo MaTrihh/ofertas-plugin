@@ -15,3 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Incluir archivos principales
 include_once plugin_dir_path( __FILE__ ) . 'includes/pages/menu.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/pages/ofertas-page.php';
+include_once plugin_dir_path( __FILE__ ) . 'includes/functions/initial-sql-script.php';
+
+register_activation_hook( __FILE__, 'ofertas_plugin_crear_tabla' );
