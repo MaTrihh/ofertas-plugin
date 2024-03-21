@@ -100,7 +100,14 @@ function crear_oferta_shortcode() {
         
                 <!-- Modal body -->
                 <div class="modal-body">
-                    ¡Formulario enviado correctamente!
+                    <div class="card">
+                        <img src="https://via.placeholder.com/300x200" alt="Oferta 1">
+                        <div class="card-content">
+                            <h2 class="card-title">Oferta 1</h2>
+                            <p class="card-description">Descripción de la oferta 1.</p>
+                            <p class="card-price">$19.99</p>
+                        </div>
+                    </div>
                 </div>
         
                 <!-- Modal footer -->
