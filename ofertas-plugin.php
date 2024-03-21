@@ -23,6 +23,7 @@ register_activation_hook( __FILE__, 'ofertas_plugin_crear_tabla' );
 function ofertas_plugin_agregar_estilos() {
     // Enqueue el archivo CSS
     wp_enqueue_style('op_main', plugins_url( 'includes/styles/main.css', __FILE__ ));
+    wp_enqueue_style('op_front', plugins_url( 'includes/styles/front.css', __FILE__ ));
 }
 
 // Para cargar los estilos en el frontend del sitio

@@ -52,6 +52,22 @@
     background-color: #45a049;
 }
 
+.reset-btn {
+    display: block !important; 
+    width: 30% !important; 
+    padding: 10px !important; 
+    border: none !important;
+    border-radius: 4px !important; 
+    background-color: #4caf50 !important;
+    color: #fff !important; 
+    font-size: 16px !important; 
+    cursor: pointer !important; 
+}
+
+.reset-btn:hover {
+    background-color: #45a049 !important;
+}
+
 /* Shortcode creacion de oferta */
 
 body {
@@ -67,8 +83,26 @@ body {
     padding: 20px;
 }
 
+.containerBack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+    text-align: center;
+}
+
 .card {
     width: 30%;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cardBack {
+    width: 50%;
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 10px;
@@ -81,6 +115,12 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
+
+.cardBack:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 .card img {
     width: 100%;
@@ -104,6 +144,12 @@ body {
 }
 
 .card-price {
+    font-size: 0.8rem;
+    color: black;
+    text-decoration: line-through; /* Agregar esta línea para tachar el texto */
+}
+
+.card-descount {
     font-size: 1.2rem;
     font-weight: bold;
     color: #ff5722;
@@ -119,4 +165,42 @@ body {
     .card {
         width: 100%;
     }
+}
+
+.card-data {
+    display: block;
+}
+
+.form-card {
+    margin-bottom: 20px;
+}
+
+.form-card label {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-card input[type="text"]{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.descuento_precio {
+    margin-left: 5px;
+}
+
+.descuento_porcentaje {
+    margin-left: 5px;
+}
+
+#div_precio {
+    display: none;
+}
+
+#div_porcentaje {
+    display: none;
 }
