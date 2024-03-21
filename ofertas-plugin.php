@@ -27,3 +27,21 @@ function ofertas_plugin_agregar_estilos() {
 
 // Para cargar los estilos en el frontend del sitio
 add_action('admin_enqueue_scripts', 'ofertas_plugin_agregar_estilos'); 
+
+function ofertas_plugin_agregar_estilos_front() {
+    // Define la URL base de tu plugin
+    $plugin_url = plugin_dir_url( __FILE__ );
+
+    // Registra y encola el estilo CSS
+    wp_enqueue_style( 'op_front', plugins_url( 'includes/styles/front.css', __FILE__ ) );
+
+    wp_enqueue_script('jquery');
+    wp_enqueue_style('dashicons');
+
+    // Añadir la biblioteca jQuery Validation
+    wp_enqueue_script('op_jquery-validation', plugin_dir_url(__FILE__) . 'lib/jquery.validate.min.js', array('jquery'), '1.19.5', true);
+    wp_enqueue_script('op_additional-methods', plugin_dir_url(__FILE__) . 'lib/additional-methods.min.js', array('jquery'), '1.19.5', true);
+}
+add_action( 'wp_enqueue_scripts', 'ofertas_plugin_agregar_estilos_front' );
+
+
