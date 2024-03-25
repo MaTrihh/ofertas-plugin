@@ -4,18 +4,22 @@ class Oferta {
     public $idAsociado;
     public $titulo;
     public $descripcion;
-    public $unidades;
+    public $cantidad;
+    public $precio_normal;
+    public $precio_rebajado;
     public $foto;
     public $fecha_inicio;
     public $fecha_fin;
 
     // Constructor de la clase
-    public function __construct($id, $idAsociado, $titulo, $descripcion, $unidades, $foto, $fecha_inicio, $fecha_fin) {
+    public function __construct($id, $idAsociado, $titulo, $descripcion, $cantidad, $precio_normal, $precio_rebajado, $foto, $fecha_inicio, $fecha_fin) {
         $this->id = $id;
         $this->idAsociado = $idAsociado;
         $this->titulo = $titulo;
         $this->descripcion = $descripcion;
-        $this->unidades = $unidades;
+        $this->cantidad = $cantidad;
+        $this->precio_normal = $precio_normal;
+        $this->precio_rebajado = $precio_rebajado;
         $this->foto = $foto;
         $this->fecha_inicio = $fecha_inicio;
         $this->fecha_fin = $fecha_fin;
@@ -38,8 +42,16 @@ class Oferta {
         $this->descripcion = $descripcion;
     }
 
-    public function setUnidades($unidades) {
-        $this->unidades = $unidades;
+    public function setCantidad($cantidad) {
+        $this->cantidad = $cantidad;
+    }
+
+    public function setPrecioNormal($precio_normal) {
+        $this->precio_normal = $precio_normal;
+    }
+
+    public function setPrecioRebajado($precio_rebajado) {
+        $this->precio_rebajado = $precio_rebajado;
     }
 
     public function setFoto($foto) {
@@ -71,8 +83,16 @@ class Oferta {
         return $this->descripcion;
     }
 
-    public function getUnidades() {
-        return $this->unidades;
+    public function getCantidad() {
+        return $this->cantidad;
+    }
+    
+    public function getPrecioNormal() {
+        return $this->precio_normal;
+    }
+
+    public function getPrecioRebajado() {
+        return $this->precio_rebajado;
     }
 
     public function getFoto() {
@@ -85,5 +105,20 @@ class Oferta {
 
     public function getFechaFin() {
         return $this->fecha_fin;
+    }
+
+    function ToArray($oferta) {
+        return array(
+            'id' => $oferta->id,
+            'idAsociado' => $oferta->idAsociado,
+            'titulo' => $oferta->titulo,
+            'descripcion' => $oferta->descripcion,
+            'cantidad' => $oferta->cantidad,
+            'precio_normal' => $oferta->precio_normal,
+            'precio_rebajado' => $oferta->precio_rebajado,
+            'foto' => $oferta->foto,
+            'fecha_inicio' => $oferta->fecha_inicio,
+            'fecha_fin' => $oferta->fecha_fin
+        );
     }
 }

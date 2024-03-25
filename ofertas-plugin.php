@@ -20,20 +20,12 @@ include_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes/shortcodes.php';
 
 register_activation_hook( __FILE__, 'ofertas_plugin_crear_tabla' );
 
-function ofertas_plugin_agregar_estilos() {
-    // Enqueue el archivo CSS
-    wp_enqueue_style('op_main', plugins_url( 'includes/styles/main.css', __FILE__ ));
-    wp_enqueue_style('op_front', plugins_url( 'includes/styles/front.css', __FILE__ ));
-}
-
-// Para cargar los estilos en el frontend del sitio
-add_action('admin_enqueue_scripts', 'ofertas_plugin_agregar_estilos'); 
-
 function ofertas_plugin_agregar_estilos_front() {
     // Define la URL base de tu plugin
     $plugin_url = plugin_dir_url( __FILE__ );
 
     // Registra y encola el estilo CSS
+    wp_enqueue_style('op_main', plugins_url( 'includes/styles/main.css', __FILE__ ));
     wp_enqueue_style( 'op_front', plugins_url( 'includes/styles/front.css', __FILE__ ) );
 
     wp_enqueue_script('jquery');

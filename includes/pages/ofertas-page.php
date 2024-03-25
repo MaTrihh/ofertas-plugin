@@ -41,7 +41,9 @@ function ofertas_plugin_tabla_page(){
                         <th>Nombre Comercio</th>
                         <th>Titulo</th>
                         <th>Descripción</th>
-                        <th>Unidades</th>
+                        <th>Cantidad</th>
+                        <th>Precio Normal</th>
+                        <th>Precio Rebajado</th>
                         <th>Foto</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
@@ -88,7 +90,15 @@ function ofertas_plugin_tabla_page(){
                             </td>
                             
                             <td>
-                                <?php echo ($cupon->getUnidades() != -1) ? $cupon->getUnidades() : "Ilimitado"; ?>
+                                <?php echo ($cupon->getCantidad() != -1) ? $cupon->getCantidad() : "Ilimitado"; ?>
+                            </td>
+
+                            <td>
+                                <?php echo $cupon->getPrecioNormal();?>
+                            </td>
+
+                            <td>
+                                <?php echo $cupon->getPrecioRebajado();?>
                             </td>
 
                             <td>

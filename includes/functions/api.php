@@ -16,7 +16,9 @@ function getOfertas($offset = null, $limit = null) {
             $fila->idAsociado,
             $fila->titulo,
             $fila->descripcion,
-            $fila->unidades,
+            $fila->cantidad,
+            $fila->precio_normal,
+            $fila->precio_rebajado,
             $fila->foto,
             $fila->fecha_inicio,
             $fila->fecha_fin
@@ -26,4 +28,30 @@ function getOfertas($offset = null, $limit = null) {
     }
 
     return $ofertas;
+}
+
+function addOferta($oferta) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas';
+
+    $formatos = array(
+        '%d', // id (entero)
+        '%d', // idAsociado (entero)
+        '%s', // titulo (cadena de texto)
+        '%s', // descripcion (cadena de texto)
+        '%d', // cantidad (entero)
+        '%f', // precio_normal (decimal)
+        '%f', // precio_rebajado (decimal)
+        '%s', // foto (cadena de texto)
+        '%s', // fecha_inicio (cadena de texto en formato de fecha YYYY-MM-DD)
+        '%s'  // fecha_fin (cadena de texto en formato de fecha YYYY-MM-DD)
+    );
+
+    $wpdb->insert($tabla_ofertas, $oferta, $formatos);
+
+    if ($wpdb->last_error) {
+        echo false;
+    } else {
+        echo true;
+    }
 }
