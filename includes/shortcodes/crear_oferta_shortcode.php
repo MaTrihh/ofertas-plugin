@@ -104,8 +104,8 @@ function crear_oferta_shortcode() {
                 var descripcion = jQuery("#description").val();
                 var fecha_inicio = jQuery("#fecha_inicial").val();
                 var fecha_fin = jQuery("#fecha_fin").val();
-                if(jQuery("#ilimitado").checked){
-                    var cantidad = -1;
+                if(jQuery("#ilimitado").prop("checked")){
+                    var cantidad = "-1";
                 } else {
                     var cantidad = jQuery("#quantity").val();
                 };
@@ -115,6 +115,8 @@ function crear_oferta_shortcode() {
                 jQuery("#form_cantidad").val(cantidad);
                 jQuery("#form_fecha_inicio").val(fecha_inicio);
                 jQuery("#form_fecha_fin").val(fecha_fin);
+                jQuery("#titulo").val(titulo);
+                jQuery("#descripcion").val(descripcion);
 
                 // Abre la ventana modal
                 jQuery('#myModal').modal('show');
@@ -136,6 +138,39 @@ function crear_oferta_shortcode() {
                 jQuery('#inputFile').val('');
                 // Establecer la imagen de la URL predeterminada o vacía
                 jQuery('#cardImg').attr('src', '<?php echo get_user_meta(get_current_user_id(), 'logotipo', true); ?>');
+            });
+
+            jQuery('#offer-data-form').on('submit', function(event) {
+                event.preventDefault(); // Evitar el envío del formulario normal
+
+                var inputFile = jQuery('#inputFile')[0].files[0];
+                var formData = new FormData(jQuery(this)[0]);
+                formData.append('action', 'crear_oferta');
+
+                if(inputFile){
+                    formData.append('inputFile', inputFile);
+                }
+
+                // Realizar la solicitud AJAX
+                jQuery.ajax({
+                    url: ajaxurl, // El punto de entrada AJAX proporcionado por WordPress
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if(response.error){
+                            alert(response.mensaje);
+                        }else{
+                            alert(response.mensaje);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Manejar errores
+                        console.error(error);
+                    }
+                });
             });
         });
     </script>
@@ -230,7 +265,7 @@ function crear_oferta_shortcode() {
                         </br>
 
                             <label for="inputFile">Foto de oferta:</label>
-                            <input type="file" id="inputFile" accept="image/*">
+                            <input type="file" id="inputFile" name="foto" accept="image/*">
 
                         </br>
                         <input type="button" class="reset-btn" id="resetFoto" value="Resetear Foto">
@@ -251,6 +286,9 @@ function crear_oferta_shortcode() {
 
                         </br></br>
 
+                        <input type="hidden" id="titulo" name="titulo">
+                        <input type="hidden" id="descripcion" name="descripcion">
+                        <input type="hidden" id="idAsociado" name="idAsociado" value="<?php echo get_current_user_id(); ?>">
                         <input type="hidden" id="form_cantidad" name="form_cantidad">
                         <input type="hidden" id="form_fecha_inicio" name="form_fecha_inicio">
                         <input type="hidden" id="form_fecha_fin" name="form_fecha_fin">

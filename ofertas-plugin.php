@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+define('OFERTAS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
 // Incluir archivos principales
 include_once plugin_dir_path( __FILE__ ) . 'includes/pages/pages.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/functions/functions.php';
@@ -34,6 +36,8 @@ function ofertas_plugin_agregar_estilos_front() {
     // Añadir la biblioteca jQuery Validation
     wp_enqueue_script('op_jquery-validation', plugin_dir_url(__FILE__) . 'lib/jquery.validate.min.js', array('jquery'), '1.19.5', true);
     wp_enqueue_script('op_additional-methods', plugin_dir_url(__FILE__) . 'lib/additional-methods.min.js', array('jquery'), '1.19.5', true);
+
+    wp_localize_script('my-plugin-script', 'my_ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
 }
 add_action( 'wp_enqueue_scripts', 'ofertas_plugin_agregar_estilos_front' );
 

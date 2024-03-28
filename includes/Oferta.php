@@ -107,7 +107,7 @@ class Oferta {
         return $this->fecha_fin;
     }
 
-    function ToArray($oferta) {
+    public static function ToArray($oferta) {
         return array(
             'id' => $oferta->id,
             'idAsociado' => $oferta->idAsociado,
