@@ -41,3 +41,46 @@
     background-color: #45a049;
     /* Cambia el color de fondo cuando se pasa el ratón */
 }
+
+.borrar-cupon-btn {
+    display: inline-block;
+    padding: 5px 15px;
+    margin: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: red;
+    /* Color de fondo verde */
+    color: white;
+    /* Color de texto blanco */
+    border: none;
+    border-radius: 5px;
+}
+
+.form-datos {
+    margin-bottom: 20px;
+}
+
+.form-datos label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-datos input[type="text"],
+.form-datos input[type="email"],
+.form-datos select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-datos textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}

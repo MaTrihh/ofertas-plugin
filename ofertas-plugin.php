@@ -22,6 +22,11 @@ include_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes/shortcodes.php';
 
 register_activation_hook( __FILE__, 'ofertas_plugin_crear_tabla' );
 
+function ofertas_plugin_agregar_estilos_admin() {
+    wp_enqueue_style( 'op_main-admin', plugins_url( 'includes/styles/main.css', __FILE__ ) );
+}
+add_action( 'admin_enqueue_scripts', 'ofertas_plugin_agregar_estilos_admin' );
+
 function ofertas_plugin_agregar_estilos_front() {
     // Define la URL base de tu plugin
     $plugin_url = plugin_dir_url( __FILE__ );

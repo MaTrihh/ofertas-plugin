@@ -1,6 +1,7 @@
 <?php
 
-function crear_oferta_shortcode() {
+function crear_oferta_shortcode()
+{
 
     ?>
     <style>
@@ -23,9 +24,9 @@ function crear_oferta_shortcode() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        jQuery(document).ready(function(){
-            jQuery('#ilimitado').change(function(){
-                if(this.checked){
+        jQuery(document).ready(function () {
+            jQuery('#ilimitado').change(function () {
+                if (this.checked) {
                     jQuery('#quantity').hide(); // Oculta el input de cantidad
                     jQuery('label[for="quantity"]').hide(); // Oculta la etiqueta del input de cantidad
                 } else {
@@ -34,8 +35,8 @@ function crear_oferta_shortcode() {
                 }
             });
 
-            jQuery('#descuento_precio').change(function(){
-                if(this.checked){
+            jQuery('#descuento_precio').change(function () {
+                if (this.checked) {
                     jQuery('#div_precio').show(); // Muestra el input de cantidad
                     jQuery('#div_porcentaje').hide(); // Oculta el input de cantidad
                     jQuery('#descuento_porcentaje').prop('checked', false);
@@ -44,8 +45,8 @@ function crear_oferta_shortcode() {
                 }
             });
 
-            jQuery('#descuento_porcentaje').change(function(){
-                if(this.checked){
+            jQuery('#descuento_porcentaje').change(function () {
+                if (this.checked) {
                     jQuery('#div_porcentaje').show(); // Muestra el input de cantidad
                     jQuery('#div_precio').hide(); // Oculta el input de cantidad
                     jQuery('#descuento_precio').prop('checked', false);
@@ -54,8 +55,8 @@ function crear_oferta_shortcode() {
                 }
             });
 
-            jQuery('#descuento_precio').change(function(){
-                if(this.checked){
+            jQuery('#descuento_precio').change(function () {
+                if (this.checked) {
                     jQuery("#cardPrice").text("15.99€");
                     jQuery("#cardDescount").text("9.99€");
                     jQuery("#cardPrice").show();
@@ -65,12 +66,12 @@ function crear_oferta_shortcode() {
                     jQuery("#cardDescount").text("");
                     jQuery("#cardPrice").hide();
                     jQuery("#cardDescount").hide();
-                    
+
                 }
             });
 
-            jQuery('#descuento_porcentaje').change(function(){
-                if(this.checked){
+            jQuery('#descuento_porcentaje').change(function () {
+                if (this.checked) {
                     jQuery("#cardPrice").hide();
                     jQuery("#cardDescount").text("25%");
                     jQuery("#cardDescount").show();
@@ -82,29 +83,29 @@ function crear_oferta_shortcode() {
                 }
             });
 
-            jQuery('#descuento_precio_normal').on('input', function(){
+            jQuery('#descuento_precio_normal').on('input', function () {
                 var actualValue = jQuery("#descuento_precio_normal").val();
                 jQuery("#cardPrice").text(actualValue + "€");
             });
 
-            jQuery('#descuento_precio_rebajado').on('input', function(){
+            jQuery('#descuento_precio_rebajado').on('input', function () {
                 var actualValue = jQuery("#descuento_precio_rebajado").val();
                 jQuery("#cardDescount").text(actualValue + "€");
             });
 
-            jQuery('#descuento_porcentaje_numero').on('input', function(){
+            jQuery('#descuento_porcentaje_numero').on('input', function () {
                 var actualValue = jQuery("#descuento_porcentaje_numero").val();
                 jQuery("#cardDescount").text(actualValue + "%");
             });
 
-            jQuery('#offer-form').submit(function(e){
+            jQuery('#offer-form').submit(function (e) {
                 e.preventDefault(); // Evita que el formulario se envíe normalmente
-                
+
                 var titulo = jQuery("#title").val();
                 var descripcion = jQuery("#description").val();
                 var fecha_inicio = jQuery("#fecha_inicial").val();
                 var fecha_fin = jQuery("#fecha_fin").val();
-                if(jQuery("#ilimitado").prop("checked")){
+                if (jQuery("#ilimitado").prop("checked")) {
                     var cantidad = "-1";
                 } else {
                     var cantidad = jQuery("#quantity").val();
@@ -122,32 +123,32 @@ function crear_oferta_shortcode() {
                 jQuery('#myModal').modal('show');
             });
 
-            jQuery('#inputFile').on('change', function() {
+            jQuery('#inputFile').on('change', function () {
                 // Obtener el objeto de archivo seleccionado
                 var file = this.files[0];
-                
+
                 // Crear un objeto URL para la imagen cargada
                 var imageUrl = URL.createObjectURL(file);
-                
+
                 // Establecer la URL de la imagen cargada como el valor del atributo src de la imagen
                 jQuery('#cardImg').attr('src', imageUrl);
             });
 
-            jQuery('#resetFoto').on('click', function() {
+            jQuery('#resetFoto').on('click', function () {
                 // Limpiar el valor del campo de entrada de tipo archivo
                 jQuery('#inputFile').val('');
                 // Establecer la imagen de la URL predeterminada o vacía
                 jQuery('#cardImg').attr('src', '<?php echo get_user_meta(get_current_user_id(), 'logotipo', true); ?>');
             });
 
-            jQuery('#offer-data-form').on('submit', function(event) {
+            jQuery('#offer-data-form').on('submit', function (event) {
                 event.preventDefault(); // Evitar el envío del formulario normal
 
                 var inputFile = jQuery('#inputFile')[0].files[0];
                 var formData = new FormData(jQuery(this)[0]);
                 formData.append('action', 'crear_oferta');
 
-                if(inputFile){
+                if (inputFile) {
                     formData.append('inputFile', inputFile);
                 }
 
@@ -159,14 +160,14 @@ function crear_oferta_shortcode() {
                     dataType: 'json',
                     contentType: false,
                     processData: false,
-                    success: function(response) {
-                        if(response.error){
+                    success: function (response) {
+                        if (response.error) {
                             alert(response.mensaje);
-                        }else{
+                        } else {
                             alert(response.mensaje);
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         // Manejar errores
                         console.error(error);
                     }
@@ -225,13 +226,13 @@ function crear_oferta_shortcode() {
     <div class="modal" id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">
-        
+
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Editar Oferta</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-        
+
                 <!-- Modal body -->
                 <div class="modal-body">
                     <form id="offer-data-form">
@@ -243,7 +244,7 @@ function crear_oferta_shortcode() {
                             <span class="card-data">El numero de los precios con dos decimales y separados por puntos</span>
                             <span class="card-data">Ejemplo: 2.40 | 5.00 </span>
                             </br>
-                            
+
                             <label for="descuento_precio_normal">Precio normal:</label>
                             <input type="text" id="descuento_precio_normal" name="descuento_precio_normal" value="15.99">
 
@@ -259,13 +260,14 @@ function crear_oferta_shortcode() {
                             <span class="card-data">Ejemplo: 25 | 50 </span>
                             </br>
                             <label for="descuento_porcentaje_numero">Porcentaje de descuento:</label>
-                            <input type="text" id="descuento_porcentaje_numero" name="descuento_porcentaje_numero" value="25">
+                            <input type="text" id="descuento_porcentaje_numero" name="descuento_porcentaje_numero"
+                                value="25">
                         </div>
-                        
+
                         </br>
 
-                            <label for="inputFile">Foto de oferta:</label>
-                            <input type="file" id="inputFile" name="foto" accept="image/*">
+                        <label for="inputFile">Foto de oferta:</label>
+                        <input type="file" id="inputFile" name="foto" accept="image/*">
 
                         </br>
                         <input type="button" class="reset-btn" id="resetFoto" value="Resetear Foto">
@@ -274,7 +276,8 @@ function crear_oferta_shortcode() {
 
                         <div class="containerBack">
                             <div class="cardBack">
-                                <img src="<?php echo get_user_meta(get_current_user_id(), 'logotipo', true); ?>" id="cardImg" alt="Oferta 1">
+                                <img src="<?php echo get_user_meta(get_current_user_id(), 'logotipo', true); ?>"
+                                    id="cardImg" alt="Oferta 1">
                                 <div class="card-content">
                                     <h2 class="card-title" id="cardTitle"></h2>
                                     <p class="card-description" id="cardDescription"></p>
@@ -295,12 +298,12 @@ function crear_oferta_shortcode() {
                         <button type="submit" class="crear-oferta-btn">Crear Oferta</button>
                     </form>
                 </div>
-        
+
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
-        
+
             </div>
         </div>
     </div>
