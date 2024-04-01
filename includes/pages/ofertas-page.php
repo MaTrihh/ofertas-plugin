@@ -114,31 +114,30 @@ function ofertas_plugin_tabla_page()
                 });
             });
 
-            jQuery(".borrar-cupon-btn").click(function () {
+            jQuery("#confirmarBorrado").click(function () {
+                    var id = jQuery(".borrar-cupon-btn").data('id');
 
-                var id = jQuery(this).data('id');
-
-                jQuery.ajax({
-                    url: ajaxurl, // El punto de entrada AJAX proporcionado por WordPress
-                    type: 'POST',
-                    data: {
-                        action: 'borrar_oferta',
-                        id: id
-                    },
-                    success: function (response) {
-                        if (response.error) {
-                            alert(response.mensaje);
-                            location.reload();
-                        } else {
-                            alert(response.mensaje);
+                    jQuery.ajax({
+                        url: ajaxurl, // El punto de entrada AJAX proporcionado por WordPress
+                        type: 'POST',
+                        data: {
+                            action: 'borrar_oferta',
+                            id: id
+                        },
+                        success: function (response) {
+                            if (response.error) {
+                                alert(response.mensaje);
+                            } else {
+                                jQuery('#confirmarBorradoModal').hide();
+                                location.reload();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            // Manejar errores
+                            console.error(error);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        // Manejar errores
-                        console.error(error);
-                    }
+                    });
                 });
-            });
 
 
         })
@@ -226,8 +225,8 @@ function ofertas_plugin_tabla_page()
                         <td>
                             <button type="button" class="editar-cupon-btn" id="editar-cupon-btn"
                                 data-id="<?php echo $cupon->getId(); ?>">Editar</button>
-                            <button type="button" class="borrar-cupon-btn" id="borrar-cupon-btn"
-                                data-id="<?php echo $cupon->getId(); ?>">Borrar</button>
+                                <button type="button" class="borrar-cupon-btn" id="borrar-cupon-btn"
+                                data-id="<?php echo $cupon->getId(); ?>" data-toggle="modal" data-target="#confirmarBorradoModal">Borrar</button>
                         </td>
                     </tr>
                     <?php
@@ -327,6 +326,26 @@ function ofertas_plugin_tabla_page()
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="confirmarBorradoModal" tabindex="-1" role="dialog" aria-labelledby="confirmarBorradoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmarBorradoModalLabel">Confirmar borrado</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas borrar este elemento?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmarBorrado">Borrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     <?php
 
 }

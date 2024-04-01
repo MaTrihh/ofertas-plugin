@@ -5,9 +5,9 @@ function ofertas_plugin_crear_tabla() {
 
     $consulta_sql = "CREATE TABLE IF NOT EXISTS $tabla_nombre (
         id INT NOT NULL AUTO_INCREMENT,
-        idAsociado BIGINT(20) NOT NULL,
-        titulo VARCHAR(60) NOT NULL,
-        descripcion VARCHAR(300),
+        idAsociado BIGINT(20) NOT NULL UNIQUE,
+        titulo VARCHAR(60) NOT NULL UNIQUE,
+        descripcion VARCHAR(300) UNIQUE,
         cantidad INT,
         precio_normal DECIMAL(10, 2),
         precio_rebajado DECIMAL(10, 2),

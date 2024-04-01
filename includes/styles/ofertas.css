@@ -1,0 +1,67 @@
+.containerBack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+    text-align: center;
+}
+
+.cardBack {
+    width: 30%;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cardBack:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cardBack img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.card-price {
+    font-size: 0.8rem;
+    color: black;
+    text-decoration: line-through; /* Agregar esta línea para tachar el texto */
+}
+
+.card-descount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff5722;
+}
+
+@media (max-width: 768px) {
+    .cardBack {
+        width: 45%;
+    }
+}
+
+@media (max-width: 576px) {
+    .cardBack {
+        width: 100%;
+    }
+}

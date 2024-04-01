@@ -49,9 +49,7 @@
     font-size: 12px;
     cursor: pointer;
     background-color: red;
-    /* Color de fondo verde */
-    color: white;
-    /* Color de texto blanco */
+    color: white;  
     border: none;
     border-radius: 5px;
 }

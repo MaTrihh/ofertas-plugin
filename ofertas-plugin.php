@@ -34,6 +34,7 @@ function ofertas_plugin_agregar_estilos_front() {
     // Registra y encola el estilo CSS
     wp_enqueue_style('op_main', plugins_url( 'includes/styles/main.css', __FILE__ ));
     wp_enqueue_style( 'op_front', plugins_url( 'includes/styles/front.css', __FILE__ ) );
+    wp_enqueue_style( 'op_ofertas', plugins_url( 'includes/styles/ofertas.css', __FILE__ ) );
 
     wp_enqueue_script('jquery');
     wp_enqueue_style('dashicons');

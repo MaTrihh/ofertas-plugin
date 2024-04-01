@@ -165,6 +165,36 @@ function getOfertaById($id) {
     return $oferta;
 }
 
+function getOfertaByIdAsociado($id) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE idAsociado = $id";
+    $resultados = $wpdb->get_results($consulta_sql);
+    $ofertas = array();
+
+    // Recorrer los resultados y crear objetos Oferta
+    foreach ($resultados as $fila) {
+        $oferta = new Oferta(
+            $fila->id,
+            $fila->idAsociado,
+            $fila->titulo,
+            $fila->descripcion,
+            $fila->cantidad,
+            $fila->precio_normal,
+            $fila->precio_rebajado,
+            $fila->foto,
+            $fila->fecha_inicio,
+            $fila->fecha_fin
+        );
+
+        $ofertas[] = $oferta;
+    }
+
+    return $ofertas;
+}
+
 function editar_oferta() {
     $oferta = getOfertaById($_POST['id']);
 
