@@ -24,9 +24,8 @@ function usuarios_lista_ofertas_shortcode(){
                         success: function(response) {
                             // Maneja la respuesta si es necesaria
                             if(!response.error){
-                                alert("holita");
-                            }else{
-                                alert("adiosito");
+                                alert("Oferta canjeada con éxito!");
+                                location.reload();
                             }
                             
                         },
@@ -55,6 +54,7 @@ function usuarios_lista_ofertas_shortcode(){
                         <p class="card-description" id="cardDescription"><?php echo $oferta->descripcion; ?></p>
                         <?php echo $precio_normal; ?>
                         <?php echo $precio_rebajado; ?>
+                        <button class="boton-oferta" data-id="<?php echo $oferta->id; ?>" data-user-id="<?php echo get_current_user_id(); ?>">Canjear oferta</button>
                     </div>
                 </div>
             
@@ -81,7 +81,6 @@ function usuarios_lista_ofertas_shortcode(){
                         <p class="card-description" id="cardDescription"><?php echo $oferta_canjeada->descripcion; ?></p>
                         <?php echo $precio_normal; ?>
                         <?php echo $precio_rebajado; ?>
-                        <button class="boton-oferta" data-id="<?php echo $oferta_canjeada->id; ?>" data-user-id="<?php echo get_current_user_id(); ?>">Canjear oferta</button>
                     </div>
                 </div>
             

@@ -343,6 +343,34 @@ function getOfertasSinCanjear($ids) {
         }
 
         return $ofertas;
+    }else{
+        $ofertas = array();
+        $idsExcluidos = implode(',', $ids);
+
+        // Consulta para seleccionar todas las filas de la tabla de ofertas
+        $consulta_sql = "SELECT * FROM mw2m_ofertas WHERE trash = 0"; 
+        $resultados = $wpdb->get_results($consulta_sql);
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados as $fila) {
+            $oferta = new Oferta(
+                $fila->id,
+                $fila->idAsociado,
+                $fila->titulo,
+                $fila->descripcion,
+                $fila->cantidad,
+                $fila->precio_normal,
+                $fila->precio_rebajado,
+                $fila->foto,
+                $fila->fecha_inicio,
+                $fila->fecha_fin,
+                $fila->trash
+            );
+
+            $ofertas[] = $oferta;
+        }
+
+        return $ofertas;
     }
 }
 
@@ -411,7 +439,9 @@ function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
 
     if($onlyId){
         return $idsOfertas;
-    }else{
+    }
+    
+    if(!empty($idsOfertas)){
         $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
 
         $ids = implode(',', $idsOfertas);
@@ -440,6 +470,8 @@ function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
 
         return $ofertasCanjeadas;
     }
+
+    return array();
 
 }
 
