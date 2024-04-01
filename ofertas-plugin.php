@@ -18,9 +18,10 @@ define('OFERTAS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 include_once plugin_dir_path( __FILE__ ) . 'includes/pages/pages.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/functions/functions.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/Oferta.php';
+include_once plugin_dir_path( __FILE__ ) . 'includes/OfertaCanjeada.php';
 include_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes/shortcodes.php';
 
-register_activation_hook( __FILE__, 'ofertas_plugin_crear_tabla' );
+register_activation_hook( __FILE__, 'ofertas_plugin_tablas' );
 
 function ofertas_plugin_agregar_estilos_admin() {
     wp_enqueue_style( 'op_main-admin', plugins_url( 'includes/styles/main.css', __FILE__ ) );

@@ -10,9 +10,10 @@ class Oferta {
     public $foto;
     public $fecha_inicio;
     public $fecha_fin;
+    public $trash;
 
     // Constructor de la clase
-    public function __construct($id, $idAsociado, $titulo, $descripcion, $cantidad, $precio_normal, $precio_rebajado, $foto, $fecha_inicio, $fecha_fin) {
+    public function __construct($id, $idAsociado, $titulo, $descripcion, $cantidad, $precio_normal, $precio_rebajado, $foto, $fecha_inicio, $fecha_fin, $trash) {
         $this->id = $id;
         $this->idAsociado = $idAsociado;
         $this->titulo = $titulo;
@@ -23,6 +24,7 @@ class Oferta {
         $this->foto = $foto;
         $this->fecha_inicio = $fecha_inicio;
         $this->fecha_fin = $fecha_fin;
+        $this->trash = $trash;
     }
 
     // Métodos Setter
@@ -66,6 +68,10 @@ class Oferta {
         $this->fecha_fin = $fecha_fin;
     }
 
+    public function setTrash($trash) {
+        $this->trash = $trash;
+    }
+
     // Métodos Getter
     public function getId() {
         return $this->id;
@@ -107,6 +113,10 @@ class Oferta {
         return $this->fecha_fin;
     }
 
+    public function getTrash() {
+        return $this->trash;
+    }
+
     public static function ToArray($oferta) {
         return array(
             'id' => $oferta->id,
@@ -118,7 +128,8 @@ class Oferta {
             'precio_rebajado' => $oferta->precio_rebajado,
             'foto' => $oferta->foto,
             'fecha_inicio' => $oferta->fecha_inicio,
-            'fecha_fin' => $oferta->fecha_fin
+            'fecha_fin' => $oferta->fecha_fin,
+            'trash' => $oferta->trash
         );
     }
 }

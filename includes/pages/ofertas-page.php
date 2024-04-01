@@ -114,8 +114,16 @@ function ofertas_plugin_tabla_page()
                 });
             });
 
+            jQuery(".borrar-cupon-btn").click(function() {
+                var id = jQuery(this).data('id');
+                var boton = jQuery("#confirmarBorrado");
+                boton.data("id", id);
+                jQuery('#confirmarBorradoModal').modal('show');
+            });
+
+
             jQuery("#confirmarBorrado").click(function () {
-                    var id = jQuery(".borrar-cupon-btn").data('id');
+                    var id = jQuery(this).data('id');
 
                     jQuery.ajax({
                         url: ajaxurl, // El punto de entrada AJAX proporcionado por WordPress
@@ -184,8 +192,10 @@ function ofertas_plugin_tabla_page()
 
                 // Combinar la URL base con el resto de la URL
                 $url = $base_url . $path;
+                $contadorBoton = 0;
 
                 foreach ($cupones as $cupon) {
+                    $contadorBoton++;
                     ?>
                     <tr>
                         <td>
@@ -225,12 +235,12 @@ function ofertas_plugin_tabla_page()
                         <td>
                             <button type="button" class="editar-cupon-btn" id="editar-cupon-btn"
                                 data-id="<?php echo $cupon->getId(); ?>">Editar</button>
-                                <button type="button" class="borrar-cupon-btn" id="borrar-cupon-btn"
-                                data-id="<?php echo $cupon->getId(); ?>" data-toggle="modal" data-target="#confirmarBorradoModal">Borrar</button>
+                                <button type="button" class="borrar-cupon-btn" data-id="<?php echo $cupon->getId(); ?>">Borrar</button>
                         </td>
                     </tr>
                     <?php
                 }
+                
                 ?>
             </tbody>
         </table>
@@ -341,7 +351,7 @@ function ofertas_plugin_tabla_page()
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-danger" id="confirmarBorrado">Borrar</button>
+                        <button type="button" class="btn btn-danger" data-id="0" id="confirmarBorrado">Borrar</button>
                     </div>
                 </div>
             </div>

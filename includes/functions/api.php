@@ -1,10 +1,10 @@
 <?php
-function getOfertas($offset = null, $limit = null) {
+function getOfertas($offset = null, $limit = null, $trash = 0) {
     global $wpdb;
     $tabla_ofertas = $wpdb->prefix . 'ofertas';
 
     // Consulta para seleccionar todas las filas de la tabla de ofertas
-    $consulta_sql = ($offset != null && $limit != null) ? "SELECT * FROM $tabla_ofertas LIMIT $offset, $limit" : "SELECT * FROM $tabla_ofertas";
+    $consulta_sql = ($offset != null && $limit != null) ? "SELECT * FROM $tabla_ofertas WHERE trash = $trash LIMIT $offset, $limit" : "SELECT * FROM $tabla_ofertas WHERE trash = $trash";
     $resultados = $wpdb->get_results($consulta_sql);
 
     $ofertas = array();
@@ -21,7 +21,8 @@ function getOfertas($offset = null, $limit = null) {
             $fila->precio_rebajado,
             $fila->foto,
             $fila->fecha_inicio,
-            $fila->fecha_fin
+            $fila->fecha_fin,
+            $fila->trash
         );
         // Agregar la oferta al array
         $ofertas[] = $oferta;
@@ -44,7 +45,8 @@ function addOferta($oferta) {
         '%f', // precio_rebajado (decimal)
         '%s', // foto (cadena de texto)
         '%s', // fecha_inicio (cadena de texto en formato de fecha YYYY-MM-DD)
-        '%s'  // fecha_fin (cadena de texto en formato de fecha YYYY-MM-DD)
+        '%s',  // fecha_fin (cadena de texto en formato de fecha YYYY-MM-DD)
+        '%d' // trash (entero)
     );
 
     $wpdb->insert($tabla_ofertas, $oferta, $formatos);
@@ -60,20 +62,32 @@ function deleteOferta($id) {
 
     global $wpdb;
     $tabla = $wpdb->prefix . 'ofertas';
+
+    $oferta = getOfertaById($id);
+    $oferta->setTrash(1);
     
-    // Verificar si la tabla existe en la base de datos
-    if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") == $tabla) {
-        // Realizar la consulta de eliminación
-        $result = $wpdb->delete($tabla, array('id' => $id));
+    // Verificar si el objeto oferta tiene un ID válido
+    if (isset($oferta->id) && $oferta->id > 0) {
+        // Obtener el nombre de la tabla de ofertas
+        $tabla_ofertas = $wpdb->prefix . 'ofertas';
         
-        // Verificar si la eliminación fue exitosa
-        if ($result !== false) {
-            return true; // La eliminación fue exitosa
+        // Convertir el objeto oferta a un array asociativo
+        $datos_actualizar = Oferta::ToArray($oferta);
+        
+        // Construir la condición WHERE
+        $condicion = array('id' => $oferta->id);
+        
+        // Realizar la actualización en la base de datos
+        $resultado = $wpdb->update($tabla_ofertas, $datos_actualizar, $condicion);
+        
+        // Verificar si la actualización fue exitosa
+        if ($resultado !== false) {
+            return true; // La actualización fue exitosa
         } else {
-            return false; // La eliminación falló
+            return false; // La actualización falló
         }
     } else {
-        return false; // La tabla no existe en la base de datos
+        return false; // El objeto oferta no tiene un ID válido
     }
     
 }
@@ -158,7 +172,8 @@ function getOfertaById($id) {
             $fila->precio_rebajado,
             $fila->foto,
             $fila->fecha_inicio,
-            $fila->fecha_fin
+            $fila->fecha_fin,
+            $fila->trash
         );
     }
 
@@ -186,7 +201,8 @@ function getOfertaByIdAsociado($id) {
             $fila->precio_rebajado,
             $fila->foto,
             $fila->fecha_inicio,
-            $fila->fecha_fin
+            $fila->fecha_fin,
+            $fila->trash
         );
 
         $ofertas[] = $oferta;
@@ -267,7 +283,7 @@ function crear_oferta() {
         $file_path = get_user_meta($_POST['idAsociado'], 'logotipo', true);
     }
 
-    $oferta = new Oferta('null', $_POST['idAsociado'], $_POST['titulo'], $_POST['descripcion'], $_POST['form_cantidad'], $descuento_normal, $descuento_final, $file_url, $_POST['form_fecha_inicio'], $_POST['form_fecha_fin']);
+    $oferta = new Oferta('null', $_POST['idAsociado'], $_POST['titulo'], $_POST['descripcion'], $_POST['form_cantidad'], $descuento_normal, $descuento_final, $file_url, $_POST['form_fecha_inicio'], $_POST['form_fecha_fin'], 0);
     $array = Oferta::ToArray($oferta);
 
     $resultado = addOferta($array);
@@ -294,3 +310,222 @@ function generarNombreArchivoAleatorio($longitud = 8) {
 
     return $nombreArchivo;
 }
+
+function getOfertasSinCanjear($ids) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas';
+
+    if(!empty($ids)){
+        $ofertas = array();
+        $idsExcluidos = implode(',', $ids);
+
+        // Consulta para seleccionar todas las filas de la tabla de ofertas
+        $consulta_sql = "SELECT * FROM mw2m_ofertas WHERE id NOT IN ($idsExcluidos) AND trash = 0"; 
+        $resultados = $wpdb->get_results($consulta_sql);
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados as $fila) {
+            $oferta = new Oferta(
+                $fila->id,
+                $fila->idAsociado,
+                $fila->titulo,
+                $fila->descripcion,
+                $fila->cantidad,
+                $fila->precio_normal,
+                $fila->precio_rebajado,
+                $fila->foto,
+                $fila->fecha_inicio,
+                $fila->fecha_fin,
+                $fila->trash
+            );
+
+            $ofertas[] = $oferta;
+        }
+
+        return $ofertas;
+    }
+}
+
+function getOfertasCanjeadas($offset = null, $limit = null) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = ($offset != null && $limit != null) ? "SELECT * FROM $tabla_ofertas LIMIT $offset, $limit" : "SELECT * FROM $tabla_ofertas";
+    $resultados = $wpdb->get_results($consulta_sql);
+
+    $ofertas_canjeadas = array();
+
+    // Recorrer los resultados y crear objetos Oferta
+    foreach ($resultados as $fila) {
+        $oferta = new OfertaCanjeada(
+            $fila->id,
+            $fila->user_id,
+            $fila->oferta_id,
+            $fila->canjeado,
+            $fila->fecha_canjeado
+        );
+        // Agregar la oferta al array
+        $ofertas_canjeadas[] = $oferta;
+    }
+
+    return $ofertas_canjeadas;
+}
+
+function getOfertaCanjeadaById($id) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE id = $id";
+    $resultados = $wpdb->get_results($consulta_sql);
+
+    // Recorrer los resultados y crear objetos Oferta
+    foreach ($resultados as $fila) {
+        $oferta = new OfertaCanjeada(
+            $fila->id,
+            $fila->user_id,
+            $fila->oferta_id,
+            $fila->canjeado,
+            $fila->fecha_canjeado
+        );
+    }
+
+    return $oferta;
+}
+
+function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE user_id = $user_id";
+    $resultados = $wpdb->get_results($consulta_sql);
+    $idsOfertas = array();
+    $ofertasCanjeadas = array();
+
+    // Recorrer los resultados y crear objetos Oferta
+    foreach ($resultados as $fila) {
+        $idsOfertas[] = $fila->oferta_id;
+    }
+
+    if($onlyId){
+        return $idsOfertas;
+    }else{
+        $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
+
+        $ids = implode(',', $idsOfertas);
+        // Consulta para seleccionar todas las filas de la tabla de ofertas
+        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id IN ($ids)";
+        $resultados2 = $wpdb->get_results($consulta_sql2);
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados2 as $fila2) {
+            $ofertaCanjeada = new Oferta(
+                $fila2->id,
+                $fila2->idAsociado,
+                $fila2->titulo,
+                $fila2->descripcion,
+                $fila2->cantidad,
+                $fila2->precio_normal,
+                $fila2->precio_rebajado,
+                $fila2->foto,
+                $fila2->fecha_inicio,
+                $fila2->fecha_fin,
+                $fila2->trash
+            );
+
+            $ofertasCanjeadas[] = $ofertaCanjeada;
+        }
+
+        return $ofertasCanjeadas;
+    }
+
+}
+
+function addOfertaCanjeada($oferta) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    $formatos = array(
+        '%d', // id (entero)
+        '%d', // user_id (entero)
+        '%d', // oferta_id (entero)
+        '%d', // canjeado (entero)
+        '%s', // fecha_canjeado (cadena de texto en formato de fecha YYYY-MM-DD)
+    );
+
+    $wpdb->insert($tabla_ofertas, $oferta, $formatos);
+
+    if ($wpdb->last_error) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function deleteOfertaCanjeadas($id) {
+
+    global $wpdb;
+    $tabla = $wpdb->prefix . 'ofertas_canjeadas';
+    
+    // Verificar si la tabla existe en la base de datos
+    if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") == $tabla) {
+        // Realizar la consulta de eliminación
+        $result = $wpdb->delete($tabla, array('id' => $id));
+        
+        // Verificar si la eliminación fue exitosa
+        if ($result !== false) {
+            return true; // La eliminación fue exitosa
+        } else {
+            return false; // La eliminación falló
+        }
+    } else {
+        return false; // La tabla no existe en la base de datos
+    }
+    
+}
+
+function updateOfertaCanjeadas($oferta) {
+    global $wpdb;
+    
+    // Verificar si el objeto oferta tiene un ID válido
+    if (isset($oferta->id) && $oferta->id > 0) {
+        // Obtener el nombre de la tabla de ofertas
+        $tabla_ofertas = $wpdb->prefix . 'ofertas';
+        
+        // Convertir el objeto oferta a un array asociativo
+        $datos_actualizar = OfertaCanjeada::ToArray($oferta);
+        
+        // Construir la condición WHERE
+        $condicion = array('id' => $oferta->id);
+        
+        // Realizar la actualización en la base de datos
+        $resultado = $wpdb->update($tabla_ofertas, $datos_actualizar, $condicion);
+        
+        // Verificar si la actualización fue exitosa
+        if ($resultado !== false) {
+            return true; // La actualización fue exitosa
+        } else {
+            return false; // La actualización falló
+        }
+    } else {
+        return false; // El objeto oferta no tiene un ID válido
+    }
+}
+
+function asignar_oferta_usuario() {
+
+    $oferta = new OfertaCanjeada('null', $_POST['user_id'], $_POST['id'], 0, 'null');
+
+    $resultado = addOfertaCanjeada($oferta::ToArray($oferta));
+
+    if($resultado){
+        wp_send_json(array('error' => false, 'mensaje' => 'Todo ha salido bien'));
+    }else{
+        wp_send_json(array('error' => true, 'mensaje' => 'Error al crear la oferta'));
+    };
+
+}
+add_action('wp_ajax_asignar_oferta_usuario', 'asignar_oferta_usuario');
+add_action('wp_ajax_nopriv_asignar_oferta_usuario', 'asignar_oferta_usuario');
