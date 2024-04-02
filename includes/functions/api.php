@@ -427,7 +427,7 @@ function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
     $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
 
     // Consulta para seleccionar todas las filas de la tabla de ofertas
-    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE user_id = $user_id";
+    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE user_id = $user_id AND canjeado = 0";
     $resultados = $wpdb->get_results($consulta_sql);
     $idsOfertas = array();
     $ofertasCanjeadas = array();
@@ -524,7 +524,7 @@ function updateOfertaCanjeadas($oferta) {
     // Verificar si el objeto oferta tiene un ID válido
     if (isset($oferta->id) && $oferta->id > 0) {
         // Obtener el nombre de la tabla de ofertas
-        $tabla_ofertas = $wpdb->prefix . 'ofertas';
+        $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
         
         // Convertir el objeto oferta a un array asociativo
         $datos_actualizar = OfertaCanjeada::ToArray($oferta);
@@ -561,3 +561,89 @@ function asignar_oferta_usuario() {
 }
 add_action('wp_ajax_asignar_oferta_usuario', 'asignar_oferta_usuario');
 add_action('wp_ajax_nopriv_asignar_oferta_usuario', 'asignar_oferta_usuario');
+
+function get_user_by_dni()
+{
+
+    $nicename = $_POST['dni'];
+
+    $user = get_user_by('login', $nicename);
+
+    if ($user) {
+        $user_id = $user->ID;
+        wp_send_json(array('success' => true, 'id' => $user_id));
+    } else {
+        wp_send_json(array('success' => false));
+    }
+
+}
+add_action('wp_ajax_get_user_by_dni', 'get_user_by_dni');
+
+function buscar_ofertas()
+{
+
+    $user_id = $_POST['user_id'];
+    $ofertas = getOfertasCanjeadasByUserId($user_id, false);
+    $user_name = get_userdata($user_id)->first_name . ' ' . get_userdata($user_id)->last_name;
+
+    if (!empty($ofertas)) {
+        wp_send_json(array('success' => true, 'ofertas' => $ofertas, 'username' => $user_name));
+    } else {
+        wp_send_json(array('success' => false));
+    }
+
+}
+add_action('wp_ajax_buscar_ofertas', 'buscar_ofertas');
+
+function buscarOfertaCanjeada($oferta_id, $user_id){
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE oferta_id = $oferta_id AND user_id = $user_id";
+    $resultados = $wpdb->get_results($consulta_sql);
+
+    // Verificar si se encontraron resultados
+    if ($resultados) {
+        // Declarar la variable $oferta fuera del bucle
+        $oferta = null;
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados as $fila) {
+            $oferta = new OfertaCanjeada(
+                $fila->id,
+                $fila->user_id,
+                $fila->oferta_id,
+                $fila->canjeado,
+                $fila->fecha_canjeado
+            );
+        }
+
+        return $oferta;
+    } else {
+        // Si no se encontraron resultados, devolver null o manejar el caso según tu lógica de aplicación
+        return null;
+    }
+}
+
+function user_oferta() {
+
+    $ids = $_POST['valoresCheckbox'];
+    $user_id = $_POST['user_id'];
+
+    foreach($ids as $oferta_id){
+        $oferta = buscarOfertaCanjeada($oferta_id, $user_id);
+
+        if ($oferta instanceof OfertaCanjeada) {
+            $oferta->setCanjeado(1);
+            updateOfertaCanjeadas($oferta);
+        }else{
+            wp_send_json(array('success' => false));
+        }
+
+        
+    }
+
+    wp_send_json(array('success' => true));
+}
+add_action('wp_ajax_user_oferta', 'user_oferta');

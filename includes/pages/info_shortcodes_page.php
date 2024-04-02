@@ -20,6 +20,12 @@ function ofertas_plugin_informacion_shortcodes_page(){
     <h2>
         [crear_oferta]: Shortcode para que los comercios creen las ofertas.
     </h2>
+
+    </br>
+
+    <h2>
+        [comercio_canjeo_ofertas]: Shortcode para que los comercios canjeen las ofertas. 
+    </h2>
     
     <?php
 
