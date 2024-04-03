@@ -2,8 +2,8 @@
 
 function usuarios_lista_ofertas_shortcode(){
 
-    $ofertas_canjeadas = getOfertasCanjeadasByUserId(get_current_user_id(), false);
-    $ofertas_sin_canjear = getOfertasSinCanjear(getOfertasCanjeadasByUserId(get_current_user_id()));
+    $ofertas_canjeadas = getOfertasGuardadasByUserId(get_current_user_id(), false, true);
+    $ofertas_sin_canjear = getOfertasSinCanjearUserId(get_current_user_id());
 
     ?>
         <script>
@@ -54,7 +54,7 @@ function usuarios_lista_ofertas_shortcode(){
                         <p class="card-description" id="cardDescription"><?php echo $oferta->descripcion; ?></p>
                         <?php echo $precio_normal; ?>
                         <?php echo $precio_rebajado; ?>
-                        <button class="boton-oferta" data-id="<?php echo $oferta->id; ?>" data-user-id="<?php echo get_current_user_id(); ?>">Canjear oferta</button>
+                        <button class="boton-oferta" data-id="<?php echo $oferta->id; ?>" data-user-id="<?php echo get_current_user_id(); ?>">Guardar oferta</button>
                     </div>
                 </div>
             
@@ -65,11 +65,11 @@ function usuarios_lista_ofertas_shortcode(){
 
         </br>
 
-        <h2>Ofertas Canjeadas</h2> 
+        <h2>Ofertas en tu Perfil</h2> 
         <div class="containerBack">
     <?php
     foreach($ofertas_canjeadas as $oferta_canjeada){
-        $foto = ($oferta_canjeada->foto != NULL) ? $oferta_canjeada->foto : get_user_meta(get_current_user_id(), 'logotipo', true) ;
+        $foto = ($oferta_canjeada->foto != NULL) ? $oferta_canjeada->foto : get_user_meta($oferta_canjeada->idAsociado, 'logotipo', true) ;
         $precio_normal = ($oferta_canjeada->precio_normal != "0.00") ? '<p class="card-price" id="cardPrice">' . $oferta_canjeada->precio_normal . '€</p>' : "";
         $precio_rebajado = ($oferta_canjeada->precio_normal != "0.00") ? '<p class="card-descount" id="cardDescount">' . $oferta_canjeada->precio_rebajado . '€</p>' : '<p class="card-descount" id="cardDescount">' . intval($oferta_canjeada->precio_rebajado) . '%</p>' ;
         ?>

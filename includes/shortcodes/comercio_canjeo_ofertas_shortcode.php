@@ -94,16 +94,26 @@ function comercio_canjeo_ofertas_shortcode() {
                                         // Construir la tabla
 
                                         var table = '<table class="table table-bordered table-striped">';
-                                        table += '<thead class="thead-dark"><tr><th></th><th>Nombre Usuario</th><th>Nombre del Premio</th><th>Descripcion</th></tr></thead>';
+                                        table += '<thead class="thead-dark"><tr><th></th><th>Nombre Usuario</th><th>Descripcion</th><th>Precio Normal</th><th>Precio Rebajado</th></tr></thead>';
                                         table += '<tbody>';
 
                                         ofertas.forEach(function (oferta, index) {
                                             if(idAsociado == oferta.idAsociado){
+
+                                                if(precio_normal === "0.00"){
+                                                    var precio_normal = "";
+                                                    var precio_rebajado = oferta.precio_rebajado + '%';
+                                                }else{
+                                                    var precio_normal = oferta.precio_normal + '€';
+                                                    var precio_rebajado = oferta.precio_rebajado + '€';
+                                                }
+
                                                 table += '<tr>';
                                                 table += '<td><input type="checkbox" name="ofertas_canjeado[]" value="' + oferta.id + '"></input></td>';
                                                 table += '<td>' + user_name + '</td>';
-                                                table += '<td>' + oferta.titulo + '</td>';
                                                 table += '<td>' + oferta.descripcion + '</td>';
+                                                table += '<td>' + precio_normal + '</td>';
+                                                table += '<td>' + precio_rebajado + '</td>';
                                                 table += '</tr>';
                                             }
                                         });
@@ -150,31 +160,33 @@ function comercio_canjeo_ofertas_shortcode() {
                     valoresCheckbox.push(jQuery(this).val());
                 });
 
-                jQuery.ajax({
-                    type: "POST",
-                    url: ajaxurl,
-                    data: {
-                        action: "user_oferta", // Acción que indica qué función de PHP llamar
-                        valoresCheckbox: valoresCheckbox,
-                        user_id: user_id
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert("Canjeo con exito");
-                            location.reload();
-                        } else {
-                            alert("Ha habido algun error en el canjeo, pruebe mas tarde");
+                if(valoresCheckbox.length != 0){
+                    jQuery.ajax({
+                        type: "POST",
+                        url: ajaxurl,
+                        data: {
+                            action: "user_oferta", // Acción que indica qué función de PHP llamar
+                            valoresCheckbox: valoresCheckbox,
+                            user_id: user_id
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert("Canjeo con exito");
+                                location.reload();
+                            } else {
+                                alert("Ha habido algun error en el canjeo, pruebe mas tarde");
+                            }
+                        },
+                        error: function (error) {
+                            // Manejar errores si los hay
+                            console.error(error);
                         }
-                    },
-                    error: function (error) {
-                        // Manejar errores si los hay
-                        console.error(error);
-                    }
-                })
+                    })
 
 
-                // Cierra la ventana modal
-                jQuery('.modal').modal('hide');
+                    // Cierra la ventana modal
+                    jQuery('.modal').modal('hide');
+                }
             });
         });
 

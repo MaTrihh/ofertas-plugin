@@ -422,12 +422,12 @@ function getOfertaCanjeadaById($id) {
     return $oferta;
 }
 
-function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
+function getOfertasGuardadasByUserId($user_id, $onlyId = false, $onlyOfertas = false) {
     global $wpdb;
     $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
 
     // Consulta para seleccionar todas las filas de la tabla de ofertas
-    $consulta_sql = "SELECT * FROM $tabla_ofertas WHERE user_id = $user_id AND canjeado = 0";
+    $consulta_sql = "SELECT oferta_id FROM $tabla_ofertas WHERE user_id = $user_id AND canjeado = 0";
     $resultados = $wpdb->get_results($consulta_sql);
     $idsOfertas = array();
     $ofertasCanjeadas = array();
@@ -442,33 +442,55 @@ function getOfertasCanjeadasByUserId($user_id, $onlyId = true) {
     }
     
     if(!empty($idsOfertas)){
-        $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
+        if($onlyOfertas){
+            $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
 
-        $ids = implode(',', $idsOfertas);
-        // Consulta para seleccionar todas las filas de la tabla de ofertas
-        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id IN ($ids)";
-        $resultados2 = $wpdb->get_results($consulta_sql2);
+            $ids = implode(',', $idsOfertas);
+            // Consulta para seleccionar todas las filas de la tabla de ofertas
+            $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id IN ($ids)";
+            $resultados2 = $wpdb->get_results($consulta_sql2);
 
-        // Recorrer los resultados y crear objetos Oferta
-        foreach ($resultados2 as $fila2) {
-            $ofertaCanjeada = new Oferta(
-                $fila2->id,
-                $fila2->idAsociado,
-                $fila2->titulo,
-                $fila2->descripcion,
-                $fila2->cantidad,
-                $fila2->precio_normal,
-                $fila2->precio_rebajado,
-                $fila2->foto,
-                $fila2->fecha_inicio,
-                $fila2->fecha_fin,
-                $fila2->trash
-            );
+            // Recorrer los resultados y crear objetos Oferta
+            foreach ($resultados2 as $fila2) {
+                $ofertaCanjeada = new Oferta(
+                    $fila2->id,
+                    $fila2->idAsociado,
+                    $fila2->titulo,
+                    $fila2->descripcion,
+                    $fila2->cantidad,
+                    $fila2->precio_normal,
+                    $fila2->precio_rebajado,
+                    $fila2->foto,
+                    $fila2->fecha_inicio,
+                    $fila2->fecha_fin,
+                    $fila2->trash
+                );
 
-            $ofertasCanjeadas[] = $ofertaCanjeada;
+                $ofertasCanjeadas[] = $ofertaCanjeada;
+            }
+
+            return $ofertasCanjeadas;
+        }else{
+            $ids = implode(',', $idsOfertas);
+            // Consulta para seleccionar todas las filas de la tabla de ofertas
+            $consulta_sql2 = "SELECT * FROM $tabla_ofertas WHERE id IN ($ids)";
+            $resultados2 = $wpdb->get_results($consulta_sql2);
+
+            // Recorrer los resultados y crear objetos Oferta
+            foreach ($resultados2 as $fila2) {
+                $ofertaCanjeada = new OfertaCanjeada(
+                    $fila2->id,
+                    $fila2->user_id,
+                    $fila2->oferta_id,
+                    $fila2->canjeado,
+                    $fila2->fecha_canjeado
+                );
+
+                $ofertasCanjeadas[] = $ofertaCanjeada;
+            }
+
+            return $ofertasCanjeadas;
         }
-
-        return $ofertasCanjeadas;
     }
 
     return array();
@@ -583,7 +605,7 @@ function buscar_ofertas()
 {
 
     $user_id = $_POST['user_id'];
-    $ofertas = getOfertasCanjeadasByUserId($user_id, false);
+    $ofertas = getOfertasSinCanjearUserId($user_id);
     $user_name = get_userdata($user_id)->first_name . ' ' . get_userdata($user_id)->last_name;
 
     if (!empty($ofertas)) {
@@ -594,6 +616,54 @@ function buscar_ofertas()
 
 }
 add_action('wp_ajax_buscar_ofertas', 'buscar_ofertas');
+
+function getOfertasSinCanjearUserId($user_id) {
+    global $wpdb;
+    $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
+
+    // Consulta para seleccionar todas las filas de la tabla de ofertas
+    $consulta_sql = "SELECT oferta_id FROM $tabla_ofertas WHERE user_id = $user_id AND canjeado = 0";
+    $resultados = $wpdb->get_results($consulta_sql);
+    $idsOfertas = array();
+    $ofertasSinCanjear = array();
+
+    // Recorrer los resultados y crear objetos Oferta
+    foreach ($resultados as $fila) {
+        $idsOfertas[] = $fila->oferta_id;
+    }
+    
+    if(!empty($idsOfertas)){
+        $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
+
+        $ids = implode(',', $idsOfertas);
+        // Consulta para seleccionar todas las filas de la tabla de ofertas
+        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id IN ($ids) AND trash = 0";
+        $resultados2 = $wpdb->get_results($consulta_sql2);
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados2 as $fila2) {
+            $ofertaCanjeada = new Oferta(
+                $fila2->id,
+                $fila2->idAsociado,
+                $fila2->titulo,
+                $fila2->descripcion,
+                $fila2->cantidad,
+                $fila2->precio_normal,
+                $fila2->precio_rebajado,
+                $fila2->foto,
+                $fila2->fecha_inicio,
+                $fila2->fecha_fin,
+                $fila2->trash
+            );
+
+            $ofertasSinCanjear[] = $ofertaCanjeada;
+        }
+
+        return $ofertasSinCanjear;
+    }
+
+    return array();
+}
 
 function buscarOfertaCanjeada($oferta_id, $user_id){
     global $wpdb;
@@ -647,3 +717,4 @@ function user_oferta() {
     wp_send_json(array('success' => true));
 }
 add_action('wp_ajax_user_oferta', 'user_oferta');
+
