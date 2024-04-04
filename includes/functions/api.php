@@ -570,6 +570,12 @@ function updateOfertaCanjeadas($oferta) {
 
 function asignar_oferta_usuario() {
 
+    $oferta_info = getOfertaById($_POST['id']);
+
+    if($oferta_info->cantidad != -1 && $oferta_info->cantidad != 0){
+        disminuirCantidad($oferta_info);
+    }
+
     $oferta = new OfertaCanjeada('null', $_POST['user_id'], $_POST['id'], 0, 'null');
 
     $resultado = addOfertaCanjeada($oferta::ToArray($oferta));
@@ -622,7 +628,7 @@ function getOfertasSinCanjearUserId($user_id) {
     $tabla_ofertas = $wpdb->prefix . 'ofertas_canjeadas';
 
     // Consulta para seleccionar todas las filas de la tabla de ofertas
-    $consulta_sql = "SELECT oferta_id FROM $tabla_ofertas WHERE user_id = $user_id AND canjeado = 0";
+    $consulta_sql = "SELECT oferta_id FROM $tabla_ofertas WHERE user_id = $user_id";
     $resultados = $wpdb->get_results($consulta_sql);
     $idsOfertas = array();
     $ofertasSinCanjear = array();
@@ -637,7 +643,7 @@ function getOfertasSinCanjearUserId($user_id) {
 
         $ids = implode(',', $idsOfertas);
         // Consulta para seleccionar todas las filas de la tabla de ofertas
-        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id IN ($ids) AND trash = 0";
+        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE id NOT IN ($ids) AND trash = 0";
         $resultados2 = $wpdb->get_results($consulta_sql2);
 
         // Recorrer los resultados y crear objetos Oferta
@@ -717,4 +723,21 @@ function user_oferta() {
     wp_send_json(array('success' => true));
 }
 add_action('wp_ajax_user_oferta', 'user_oferta');
+
+function disminuirCantidad($oferta){
+    $cantidad = $oferta->cantidad;
+
+    $cantidad--;
+
+    if($cantidad == 0 || 0 > $cantidad){
+
+        $oferta->setTrash(1);
+        $oferta->setCantidad($cantidad);
+
+    }else{
+        $oferta->setCantidad($cantidad);
+    }
+
+    updateOferta($oferta);
+}
 
