@@ -4,7 +4,7 @@
  * Description: Plugin de ofertas para la pagina alcalacentro.es
  * Plugin URI: https://github.com/MaTrihh/ofertas-plugin
  * Author: Ibai Ocaña Lorente
- * Version: 0.1
+ * Version: 1.0
  * Author URI: https://github.com/MaTrihh/
  */
 
