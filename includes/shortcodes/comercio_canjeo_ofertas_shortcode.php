@@ -100,7 +100,7 @@ function comercio_canjeo_ofertas_shortcode() {
                                         ofertas.forEach(function (oferta, index) {
                                             if(idAsociado == oferta.idAsociado){
 
-                                                if(precio_normal === "0.00"){
+                                                if(oferta.precio_normal === "0.00"){
                                                     var precio_normal = "";
                                                     var precio_rebajado = oferta.precio_rebajado + '%';
                                                 }else{
@@ -171,10 +171,10 @@ function comercio_canjeo_ofertas_shortcode() {
                         },
                         success: function (response) {
                             if (response.success) {
-                                alert("Canjeo con exito");
+                                alert("Oferta canjeada con exito!");
                                 location.reload();
                             } else {
-                                alert("Ha habido algun error en el canjeo, pruebe mas tarde");
+                                alert("Ha habido algun error, pruebe mas tarde");
                             }
                         },
                         error: function (error) {
