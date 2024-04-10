@@ -7,7 +7,7 @@ function ofertas_plugin_tablas() {
 
 function ofertas_plugin_crear_tabla() {
     global $wpdb;
-    $tabla_nombre = $wpdb->prefix . 'ofertas';
+    $tabla_nombre = $wpdb->prefix . 'raffle_codes';
 
     $consulta_sql = "CREATE TABLE IF NOT EXISTS $tabla_nombre (
         id INT NOT NULL AUTO_INCREMENT,

@@ -666,9 +666,33 @@ function getOfertasSinCanjearUserId($user_id) {
         }
 
         return $ofertasSinCanjear;
-    }
+    }else{
+        $tabla_ofertas2 = $wpdb->prefix . 'ofertas';
 
-    return array();
+        $consulta_sql2 = "SELECT * FROM $tabla_ofertas2 WHERE trash = 0";
+        $resultados2 = $wpdb->get_results($consulta_sql2);
+
+        // Recorrer los resultados y crear objetos Oferta
+        foreach ($resultados2 as $fila2) {
+            $ofertaCanjeada = new Oferta(
+                $fila2->id,
+                $fila2->idAsociado,
+                $fila2->titulo,
+                $fila2->descripcion,
+                $fila2->cantidad,
+                $fila2->precio_normal,
+                $fila2->precio_rebajado,
+                $fila2->foto,
+                $fila2->fecha_inicio,
+                $fila2->fecha_fin,
+                $fila2->trash
+            );
+
+            $ofertasSinCanjear[] = $ofertaCanjeada;
+        }
+
+        return $ofertasSinCanjear;
+    }
 }
 
 function buscarOfertaCanjeada($oferta_id, $user_id){

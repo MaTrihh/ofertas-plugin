@@ -54,7 +54,7 @@ function comercio_canjeo_ofertas_shortcode() {
         }
     </style>
 
-<script>
+    <script>
         jQuery(document).ready(function () {
             jQuery(".buscar-ofertas-btn").on("click", function () {
 
